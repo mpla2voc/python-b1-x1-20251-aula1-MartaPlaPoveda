@@ -49,23 +49,125 @@ from util_package import text_manager
 from util_package.text_manager import TEXT, is_newline, is_space, remove_punctuation_marks
 
 def find_largest_word(text):
-    # Write here your code
-    pass                
+    """Return the longest word in a text, excluding punctuation marks."""
+    current_word = ""
+    longest_word = ""
+
+    for character in text:
+        # Check whether the character marks the end of a word.
+        if is_space(character) or is_newline(character):
+            current_word = remove_punctuation_marks(current_word)
+
+            # Update the longest word if the current one is longer.
+            if len(current_word) > len(longest_word):
+                longest_word = current_word
+
+            # Reset the current word to start reading a new one.
+            current_word = ""
+
+        else:
+            # Add the character to the word being constructed.
+            current_word += character
+
+    # Process the last word, which may not end with a space or newline.
+    current_word = remove_punctuation_marks(current_word)
+
+    if len(current_word) > len(longest_word):
+        longest_word = current_word
+
+    return longest_word
+    
 
 def is_palindrome_word(word):
-    # Write here your code
-    pass
-    
+    """Recursively checks whether a word is a palindrome."""
+
+    # Remove punctuation marks.
+    word = remove_punctuation_marks(word)
+
+    # Convert the word to lowercase.
+    word = word.lower()
+
+    # If the word has one letter or is empty, it is a palindrome.
+    if len(word) <= 1:
+        return True
+
+    # If the first and last letters are different, it is not a palindrome.
+    elif word[0] != word[-1]:
+        return False
+
+    # If they match, recursively check the middle part of the word.
+    else:
+        return is_palindrome_word(word[1:-1])
 
 
 def count_palindrome_words(text):
-    # Write here your code
-    pass
+    """Returns the total number of palindrome words found in a text."""
+
+    current_word = ""
+    count = 0
+
+    for character in text:
+        # Check if the character is a space or a newline.
+        if is_space(character) or is_newline(character):
+            # Remove punctuation marks from the current word.
+            current_word = remove_punctuation_marks(current_word)
+
+            # Check that the word is not empty and is a palindrome.
+            if current_word and is_palindrome_word(current_word):
+                count += 1
+
+            # Reset the current word to start building the next one.
+            current_word = ""
+
+        else:
+            # Add the character to the word being constructed.
+            current_word += character
+
+    # Check the last word, even if it is not followed by a space.
+    current_word = remove_punctuation_marks(current_word)
+
+    if current_word and is_palindrome_word(current_word):
+        count += 1
+
+    # Return the total number of palindromes found.
+    return count
 
 
 def find_size_largest_sentence(text, filter):
-    # Write here your code
-    pass
+    """Returns the length of the longest sentence containing the filter."""
+
+    current_sentence = ""
+    largest_sentence = 0
+
+    for character in text:
+        # Check if we have reached the end of a sentence.
+        if is_newline(character):
+
+            # Check if the sentence contains the specified filter.
+            if filter in current_sentence:
+
+                # Compare its length with the longest one found so far.
+                if len(current_sentence) > largest_sentence:
+                    largest_sentence = len(current_sentence)
+
+            # Reset the sentence to start building the next one.
+            current_sentence = ""
+
+        else:
+            # Add the character to the sentence being constructed.
+            current_sentence += character
+
+    # Check the last sentence, even if it is not followed by a newline.
+    if filter in current_sentence:
+        if len(current_sentence) > largest_sentence:
+            largest_sentence = len(current_sentence)
+
+    # Raise an exception if no sentence contains the filter.
+    if largest_sentence == 0:
+        raise ValueError("No sentence contains the filter")
+
+    # Return the length of the longest sentence containing the filter.
+    return largest_sentence
 
 
 # Si quieres probar tu código, descomenta las siguientes líneas y ejecuta el script
